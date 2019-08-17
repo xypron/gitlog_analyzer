@@ -17,14 +17,16 @@ The software can be built with::
 
 It is installed with::
 
-    sudo make installed
+    sudo make install
 
 Usage
 -----
 
 In the Git directory execute::
 
-    gitlog_analyzer > result.csv
+    git log --date=iso-strict --no-merges \
+    --pretty=']start::commit[%n%H%n%cE%n%ct%n%cD%n%aE%n%at%n%aD%n%B%n]start::diff[' \
+    --full-diff -p . | gitlog_analyzer > result.csv
 
 License
 -------
