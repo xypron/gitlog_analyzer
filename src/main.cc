@@ -4,11 +4,24 @@
 #include <iostream>
 #include "gitlog_analyzer.h"
 
-static bool starts_with(std::string str, std::string match)
+/**
+ * starts_with() - checks if string starts with a given prefix
+ *
+ * @str:	string to check
+ * @prefix:	prefix
+ * Return:	true if str starts with prefix
+ */
+static bool starts_with(std::string str, std::string prefix)
 {
-	return (str.substr(0, match.length()) == match);
+	return (str.substr(0, prefix.length()) == prefix);
 }
 
+/**
+ * parse_diff() - parse the diff section of the commit
+ *
+ * @commit:	commit to parse
+ * Return:	true if the start token of the next commit message is found
+ */
 static bool parse_diff(Commit *commit)
 {
 	std::string line;
@@ -28,7 +41,13 @@ static bool parse_diff(Commit *commit)
 	return false;
 }
 
-static bool parse_body(Commit *commit)
+/**
+ * parse_commit_message() - parse commit message
+ *
+ * @commit:	commit to parse
+ * Return:	true if the starta of the diff section is found
+ */
+static bool parse_commit_message(Commit *commit)
 {
 	std::string line;
 
@@ -50,6 +69,14 @@ static bool parse_body(Commit *commit)
 	return false;
 }
 
+/**
+ * day_of_week() - convert day of week
+ *
+ * Convert the day of week from a time stamp in RFC 2822 format to an integer.
+ *
+ * @date:	date in time stamp in RFC 2822 format
+ * Return:	1 = Monday, 7 = Sunday, 0 = invalid
+ */
 static int day_of_week(std::string date)
 {
 	std::string wday = date.substr(0, 3);
@@ -67,10 +94,16 @@ static int day_of_week(std::string date)
 	if (wday == "Sat")
 		return 6;
 	if (wday == "Sun")
-		return 8;
+		return 7;
 	return 0;
 }
 
+/**
+ * parse_header() - parse header information of a commit
+ *
+ * @commit:	commit to parse
+ * Return:	false if at end of file
+ */
 static bool parse_header(Commit *commit)
 {
 	std::string line;
@@ -106,11 +139,14 @@ static bool parse_header(Commit *commit)
 	return true;
 }
 
+/**
+ * parse() - parse input from standard input
+ */
 static void parse()
 {
 	Commit *commit = new Commit();
 
-	while (parse_header(commit) && parse_body(commit) &&
+	while (parse_header(commit) && parse_commit_message(commit) &&
 	       parse_diff(commit)) {
 		std::cout << *commit << std::endl;
 		commit->~Commit();		
@@ -120,9 +156,15 @@ static void parse()
 	commit->~Commit();		
 }
 
+/**
+ * main() - entry point
+ *
+ * @argc:	number of arguments
+ * @argv:	arguments
+ * Return:	0 on success
+ */
 int main(int argc, char *argv[])
 {
-	std::cout << "Hello world" << std::endl;
 	parse();
 	return 0;
 }
