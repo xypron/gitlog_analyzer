@@ -1,3 +1,6 @@
+*.orig
+*.swp
+*.o
 Makefile
 Makefile.in
 aclocal.m4
@@ -15,5 +18,4 @@ src/.deps/
 src/Makefile
 src/Makefile.in
 src/gitlog_analyzer
-src/*.o
 stamp-h1
