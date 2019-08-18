@@ -7,10 +7,17 @@ Commit::Commit()
 	this->signed_offs = 0;
 	this->reviews = 0;
 	this->commit_message_lines = 0;
+	this->fixes = 0;
+	this->fixed = 0;
 }
 
 Commit::~Commit()
 {
+}
+
+bool Commit::less(const Commit *rhs) const
+{
+	return this->hash < rhs->hash;
 }
 
 std::ostream& operator<<(std::ostream& os, const Commit& commit)
@@ -31,7 +38,7 @@ std::ostream& operator<<(std::ostream& os, const Commit& commit)
 	   commit.testeds << '\t' <<
 	   commit.reviews << '\t' <<
 	   commit.fixes << '\t' <<
-	
+
 	   commit.changed_files << '\t' <<
 	   commit.hunks << '\t' <<
 	   commit.lines_added << '\t' <<

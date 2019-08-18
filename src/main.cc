@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <list>
+#include <set>
 #include "gitlog_analyzer.h"
 
 /**
@@ -47,24 +49,32 @@ static bool parse_diff(Commit *commit)
  * @commit:	commit to parse
  * Return:	true if the starta of the diff section is found
  */
-static bool parse_commit_message(Commit *commit)
+static bool parse_commit_message(Commit *commit, FixList &fixes)
 {
 	std::string line;
 
 	while (std::getline(std::cin, line)) {
 		++commit->commit_message_lines;
 
-		if (starts_with(line, "Signed-off-by:"))
+		if (starts_with(line, "Signed-off-by:")) {
 			++commit->signed_offs;
-		else if (starts_with(line, "Tested-by:"))
+		} else if (starts_with(line, "Tested-by:")) {
 			++commit->testeds;
-		else if (starts_with(line, "Reviewed-by:"))
+		} else if (starts_with(line, "Reviewed-by:")) {
 			++commit->reviews;
-		else if (starts_with(line, "Fixes:"), 0)
+		} else if (starts_with(line, "Fixes:")) {
 			++commit->fixes;
-		else if (line == DIFF_TOKEN)
-			return true;
+			try {
+				fixes.push_back(Fix(line));
+			} catch (...) {
+				std::cout << "invalid Fixes: " << line
+					  << std::endl;
+			}
 
+
+		} else if (line == DIFF_TOKEN) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -112,7 +122,7 @@ static bool parse_header(Commit *commit)
 		return false;
 	if (line == START_TOKEN)
 		std::getline(std::cin, line);
-	
+
 	commit->hash = line;
 
 	std::getline(std::cin, line);
@@ -145,15 +155,35 @@ static bool parse_header(Commit *commit)
 static void parse()
 {
 	Commit *commit = new Commit();
+	CommitList commit_list;
+	CommitSet commit_set;
+	FixList fixes;
+	FixList::iterator fix_pos;
 
-	while (parse_header(commit) && parse_commit_message(commit) &&
+	while (parse_header(commit) && parse_commit_message(commit, fixes) &&
 	       parse_diff(commit)) {
-		std::cout << *commit << std::endl;
-		commit->~Commit();		
+
+		commit_set.insert(commit);
+		commit_list.push_back(commit);
+
 		commit = new Commit();
 	}
-	std::cout << *commit << std::endl;
-	commit->~Commit();		
+	commit_set.insert(commit);
+	commit_list.push_back(commit);
+
+	/* Mark fixed commits */
+	for (fix_pos = fixes.begin(); fix_pos != fixes.end(); ++fix_pos) {
+		Commit seek = Commit();
+		CommitSet::iterator found;
+
+		seek.hash = fix_pos->hash;
+		found = commit_set.lower_bound(&seek);
+
+		if (found != commit_set.end() &&
+		    starts_with((*found)->hash, seek.hash)) {
+			++(*found)->fixed;
+		}
+	}
 }
 
 /**

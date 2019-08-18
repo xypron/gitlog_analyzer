@@ -12,6 +12,7 @@ class Commit
 public:
 	Commit();
 	~Commit();
+	bool less(const Commit *) const;
 
 	// header
 	std::string hash;
@@ -36,6 +37,10 @@ public:
 	unsigned int hunks;
 	unsigned int lines_added;
 	unsigned int lines_removed;
+
+	// other
+	unsigned int fixed;
+
 };
 
 std::ostream& operator<<(std::ostream&, const Commit&);
