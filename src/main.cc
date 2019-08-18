@@ -163,7 +163,7 @@ static void parse(CommitList &commit_list)
 	       parse_diff(commit)) {
 
 		commit_set.insert(commit);
-		commit_list.push_back(commit);
+		commit_list.push_front(commit);
 
 		commit = new Commit();
 	}
@@ -232,7 +232,8 @@ static void output_authors(std::ostream &os, AuthorSet &author_set) {
 }
 
 
-static void output_commits(std::ostream &os, CommitList commit_list) {
+static void output_commits(std::ostream &os, CommitList commit_list,
+			   unsigned long start) {
 	CommitList::iterator pos;
 
 	Commit::csv_header(os);
@@ -240,6 +241,10 @@ static void output_commits(std::ostream &os, CommitList commit_list) {
 
 	for (pos = commit_list.begin(); pos != commit_list.end(); ++pos) {
 		Commit *commit = *pos;
+
+		if (commit->committer_timestamp < start) {
+			continue;
+		}
 
 		os << *commit << std::endl;
 	}
@@ -257,12 +262,19 @@ int main(int argc, char *argv[])
 	AuthorSet author_set;
 	CommitList commit_list;
 	std::ofstream file;
+	unsigned long start = 0;
 
-	if (argc != 3) {
+	if (argc < 3 || argc > 4) {
 		std::cerr << "Usage: " << argv[0] <<
-			    " authors.csv commits.csv" << std::endl;
+			    " authors.csv commits.csv [unix start time]"
+			  << std::endl;
 		return 1;
 	}
+
+	if (argc > 3) {
+		start = std::stoul(argv[3], nullptr);
+	}
+	std::cout << start << std::endl;
 
 	parse(commit_list);
 	authors(author_set, commit_list);
@@ -271,7 +283,7 @@ int main(int argc, char *argv[])
 	output_authors(file, author_set);
 	file.close();
 	file.open(argv[2]);
-	output_commits(file, commit_list);
+	output_commits(file, commit_list, start);
 	file.close();
 
 	return 0;
