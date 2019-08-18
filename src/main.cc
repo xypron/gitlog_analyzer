@@ -152,10 +152,9 @@ static bool parse_header(Commit *commit)
 /**
  * parse() - parse input from standard input
  */
-static void parse()
+static void parse(CommitList &commit_list)
 {
 	Commit *commit = new Commit();
-	CommitList commit_list;
 	CommitSet commit_set;
 	FixList fixes;
 	FixList::iterator fix_pos;
@@ -186,6 +185,62 @@ static void parse()
 	}
 }
 
+static void authors(AuthorSet &author_set, CommitList &commit_list)
+{
+	Author seek;
+	AuthorSet::iterator it_auth;
+	Author *author;
+	CommitList::iterator pos;
+
+	for (pos = commit_list.begin(); pos != commit_list.end(); ++pos) {
+		Commit *commit = *pos;
+		seek.email = commit->committer_email;
+		it_auth = author_set.find(&seek);
+		if (it_auth != author_set.end()) {
+			author = *it_auth;
+		} else {
+			author = new Author(commit->committer_email);
+			author_set.insert(author);
+			std::cout << *author << std::endl;
+		}
+		author->add_commit(commit);
+		commit->committer = *author;
+
+		seek.email = commit->author_email;
+		it_auth = author_set.find(&seek);
+		if (it_auth != author_set.end()) {
+			author = *it_auth;
+		} else {
+			author = new Author(commit->author_email);
+			author_set.insert(author);
+			std::cout << *author << std::endl;
+		}
+		author->add_patch(commit);
+		commit->author = *author;
+	}
+}
+
+static void output_authors(std::ostream &os, AuthorSet &author_set) {
+	AuthorSet::iterator pos;
+	
+	for (pos = author_set.begin(); pos != author_set.end(); ++pos) {
+		Author *author = *pos;
+
+		os << *author << std::endl;
+	}
+}
+
+
+static void output_commits(std::ostream &os, CommitList commit_list) {
+	CommitList::iterator pos;
+
+	for (pos = commit_list.begin(); pos != commit_list.end(); ++pos) {
+		Commit *commit = *pos;
+
+		os << *commit << std::endl;
+	}
+}
+
 /**
  * main() - entry point
  *
@@ -195,6 +250,14 @@ static void parse()
  */
 int main(int argc, char *argv[])
 {
-	parse();
+	AuthorSet author_set;
+	CommitList commit_list;
+
+	parse(commit_list);
+	authors(author_set, commit_list);
+
+	output_authors(std::cout, author_set);
+	output_commits(std::cout, commit_list);
+
 	return 0;
 }

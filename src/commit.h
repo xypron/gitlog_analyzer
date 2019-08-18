@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <string>
+#include "author.h"
 
 class Commit
 {
@@ -24,6 +25,8 @@ public:
 	unsigned long author_timestamp;
 	int author_wday;
 	int author_hour;
+	Author author;
+	Author committer;
 
 	// commit message
 	unsigned int commit_message_lines;
