@@ -67,7 +67,7 @@ static bool parse_commit_message(Commit *commit, FixList &fixes)
 			try {
 				fixes.push_back(Fix(line));
 			} catch (...) {
-				std::cout << "invalid Fixes: " << line
+				std::cerr << "invalid Fixes: " << line
 					  << std::endl;
 			}
 
@@ -201,7 +201,6 @@ static void authors(AuthorSet &author_set, CommitList &commit_list)
 		} else {
 			author = new Author(commit->committer_email);
 			author_set.insert(author);
-			std::cout << *author << std::endl;
 		}
 		author->add_commit(commit);
 		commit->committer = *author;
@@ -213,7 +212,6 @@ static void authors(AuthorSet &author_set, CommitList &commit_list)
 		} else {
 			author = new Author(commit->author_email);
 			author_set.insert(author);
-			std::cout << *author << std::endl;
 		}
 		author->add_patch(commit);
 		commit->author = *author;
@@ -223,6 +221,9 @@ static void authors(AuthorSet &author_set, CommitList &commit_list)
 static void output_authors(std::ostream &os, AuthorSet &author_set) {
 	AuthorSet::iterator pos;
 	
+	Author::csv_header(os, "");
+	os << std::endl;
+
 	for (pos = author_set.begin(); pos != author_set.end(); ++pos) {
 		Author *author = *pos;
 
@@ -233,6 +234,9 @@ static void output_authors(std::ostream &os, AuthorSet &author_set) {
 
 static void output_commits(std::ostream &os, CommitList commit_list) {
 	CommitList::iterator pos;
+
+	Commit::csv_header(os);
+	os << std::endl;
 
 	for (pos = commit_list.begin(); pos != commit_list.end(); ++pos) {
 		Commit *commit = *pos;
@@ -252,12 +256,24 @@ int main(int argc, char *argv[])
 {
 	AuthorSet author_set;
 	CommitList commit_list;
+	std::ofstream file;
+
+	if (argc != 3) {
+		std::cerr << "Usage: " << argv[0] <<
+			    " authors.csv commits.csv" << std::endl;
+		return 1;
+	}
 
 	parse(commit_list);
 	authors(author_set, commit_list);
 
-	output_authors(std::cout, author_set);
-	output_commits(std::cout, commit_list);
+	file.open(argv[1]);
+	output_authors(file, author_set);
+	file.close();
+	file.open(argv[2]);
+	output_commits(file, commit_list);
+	file.close();
 
 	return 0;
 }
+

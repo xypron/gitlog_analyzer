@@ -14,6 +14,7 @@ public:
 	Commit();
 	~Commit();
 	bool less(const Commit *) const;
+	static std::ostream& csv_header(std::ostream& os);
 
 	// header
 	std::string hash;

@@ -7,6 +7,9 @@
 
 class Commit;
 
+/**
+ * class Author - author or committer of a patch
+ */
 class Author {
 
 public:
@@ -16,15 +19,21 @@ public:
 	void add_commit(Commit *commit);
 	void add_patch(Commit *commit);
 	bool less(const Author *rhs) const;
+	static std::ostream& csv_header(std::ostream& os, std::string prefix);
 
-	long id;
+	unsigned int id;
 	std::string email;
-	long commits;
-	long committer_hours[24];
-	long committer_wdays[8];
-	long patches;
-	long author_hours[24];
-	long author_wdays[8];
+	std::string email_domain;
+	unsigned int commits;
+	unsigned int committer_hours[24];
+	unsigned int committer_wdays[8];
+	unsigned long first_commit;
+	unsigned long last_commit;
+	unsigned int patches;
+	unsigned int author_hours[24];
+	unsigned int  author_wdays[8];
+	unsigned long first_patch;
+	unsigned long last_patch;
 };
 
 std::ostream& operator<<(std::ostream&, const Author&);

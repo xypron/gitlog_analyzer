@@ -20,30 +20,42 @@ bool Commit::less(const Commit *rhs) const
 	return this->hash < rhs->hash;
 }
 
+std::ostream& Commit::csv_header(std::ostream& os)
+{
+	os << "hash" << ",committer_wday" << ",committer_hour" <<
+	      ",author_wday" << ",author_hour" << ",commit_message_lines" <<
+	      ",signed_offs" << ",testeds" << ",reviews" << ",fixes" <<
+	      ",changed_files" << ",hunks" << ",lines_added" <<
+	      ",lines_removed" << ",fixes,";
+	      Author::csv_header(os, "author_");
+	      os << ",";
+	      Author::csv_header(os, "committer_");
+
+	return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const Commit& commit)
 {
 	os <<
-	   commit.hash << '\t' <<
-	   commit.committer_email << '\t' <<
-	   commit.committer_timestamp << '\t' <<
-	   commit.committer_wday << '\t' <<
-	   commit.committer_hour << '\t' <<
-	   commit.author_email << '\t' <<
-	   commit.author_timestamp << '\t' <<
-	   commit.author_wday << '\t' <<
-	   commit.author_hour << '\t' <<
+	   commit.hash << ',' <<
+	   commit.committer_wday << ',' <<
+	   commit.committer_hour << ',' <<
+	   commit.author_wday << ',' <<
+	   commit.author_hour << ',' <<
 
-	   commit.commit_message_lines << '\t' <<
-	   commit.signed_offs << '\t' <<
-	   commit.testeds << '\t' <<
-	   commit.reviews << '\t' <<
-	   commit.fixes << '\t' <<
+	   commit.commit_message_lines << ',' <<
+	   commit.signed_offs << ',' <<
+	   commit.testeds << ',' <<
+	   commit.reviews << ',' <<
+	   commit.fixes << ',' <<
 
-	   commit.changed_files << '\t' <<
-	   commit.hunks << '\t' <<
-	   commit.lines_added << '\t' <<
-	   commit.lines_removed << '\t'<<
-	   "";
+	   commit.changed_files << ',' <<
+	   commit.hunks << ',' <<
+	   commit.lines_added << ',' <<
+	   commit.lines_removed << ','<<
+
+	   commit.author << ',' <<
+	   commit.committer;
 
 	return os;
 }

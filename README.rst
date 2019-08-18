@@ -26,7 +26,7 @@ In the Git directory execute::
 
     git log --date=iso-strict --no-merges \
     --pretty=']start::commit[%n%H%n%cE%n%ct%n%cD%n%aE%n%at%n%aD%n%B%n]start::diff[' \
-    --full-diff -p . | gitlog_analyzer > result.csv
+    --full-diff -p . | gitlog_analyzer authors.csv commits.csv
 
 License
 -------

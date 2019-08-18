@@ -12,4 +12,4 @@ fix.cc \
 main.cc
 
 check:
-	./gitlog_analyzer < input.txt
+	./gitlog_analyzer authors.csv commits.csv < input.txt
