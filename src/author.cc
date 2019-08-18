@@ -145,7 +145,6 @@ std::ostream& operator<<(std::ostream& os, const Author& author)
 {
 	int i;
 
-	os << author.email;
 	os << author.id << "," << author.email_domain << "," << author.commits;
 	for (i = 0; i < 24; ++i) {
 		os << "," << author.committer_hours[i];
