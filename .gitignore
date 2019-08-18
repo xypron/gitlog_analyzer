@@ -1,6 +1,9 @@
 *.orig
 *.swp
 *.o
+.~*
+*.csv
+*.txt
 Makefile
 Makefile.in
 aclocal.m4
