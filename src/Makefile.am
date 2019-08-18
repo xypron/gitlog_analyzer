@@ -1,4 +1,4 @@
-sbin_PROGRAMS = \
+bin_PROGRAMS = \
 gitlog_analyzer
 
 gitlog_analyzer_SOURCES = \
