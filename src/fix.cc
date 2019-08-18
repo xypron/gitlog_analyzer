@@ -15,13 +15,14 @@ Fix::Fix(std::string line)
 	 * Select the hash of the fixed commit. This should be at least a 12
 	 * character hexadecimal string but some committers use a shorter one.
 	 */
-	std::regex expression("Fixes:\\s+([a-f,0-9]{8,40})\\b.*");
+	std::regex expression(".*[^a-f,0-9]([a-f,0-9]{8,40}).*");
 
 	std::regex_match(line, match, expression, std::regex_constants::match_default);
-	if (match.size() > 1)
+	if (match.size() > 1) {
 		this->hash = match.str(1);
-	else
+	} else {
 		throw 0;
+	}
 }
 
 /**
