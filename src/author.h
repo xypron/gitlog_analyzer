@@ -34,6 +34,12 @@ public:
 	unsigned int  author_wdays[8];
 	unsigned long first_patch;
 	unsigned long last_patch;
+
+	unsigned long commit_message_lines;
+	unsigned long changed_files;
+	unsigned long hunks;
+	unsigned long lines_added;
+	unsigned long lines_removed;
 };
 
 std::ostream& operator<<(std::ostream&, const Author&);

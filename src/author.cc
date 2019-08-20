@@ -52,6 +52,11 @@ Author::Author(std::string email)
 	this->last_commit = 0;
 	this->first_patch = 0;
 	this->last_patch = 0;
+	this->commit_message_lines = 0;
+	this->changed_files = 0;
+	this->hunks = 0;
+	this->lines_added = 0;
+	this->lines_removed = 0;
 }
 
 /**
@@ -89,6 +94,11 @@ void Author::add_patch(Commit *patch) {
 		this->first_patch = patch->author_timestamp;
 	}
 	this->last_patch = patch->author_timestamp;
+	this->commit_message_lines += patch->commit_message_lines;
+	this->changed_files += patch->changed_files;
+	this->hunks += patch->hunks;
+	this->lines_added += patch->lines_added;
+	this->lines_removed += patch->lines_removed;
 }
 
 /**
@@ -132,6 +142,12 @@ std::ostream&  Author::csv_header(std::ostream& os, std::string prefix) {
 	os << "," << prefix << "first_patch";
 	os << "," << prefix << "last_patch";
 
+	os << "," << prefix << "commit_message_lines";
+	os << "," << prefix << "changed_files";
+	os << "," << prefix << "hunks";
+	os << "," << prefix << "lines_added";
+	os << "," << prefix << "lines_removed";
+
 	return os;
 }
 
@@ -145,22 +161,31 @@ std::ostream& operator<<(std::ostream& os, const Author& author)
 {
 	int i;
 
-	os << author.id << "," << author.email_domain << "," << author.commits;
+	os << author.id;
+	os << "," << author.email_domain;
+	os << "," << author.commits;
 	for (i = 0; i < 24; ++i) {
 		os << "," << author.committer_hours[i];
 	}
 	for (i = 1; i < 8; ++i) {
 		os << "," << author.committer_wdays[i];
 	}
-	os << "," << author.first_commit << "," << author.last_commit <<
-	      "," << author.patches;
+	os << "," << author.first_commit;
+	os << "," << author.last_commit;
+	os << "," << author.patches;
 	for (i = 0; i < 24; ++i) {
 		os << "," << author.author_hours[i];
 	}
 	for (i = 1; i < 8; ++i) {
 		os << "," << author.author_wdays[i];
 	}
-	os << "," << author.first_patch << "," << author.last_patch;
+	os << "," << author.first_patch;
+	os << "," << author.last_patch;
+	os << "," << author.commit_message_lines;
+	os << "," << author.changed_files;
+	os << "," << author.hunks;
+	os << "," << author.lines_added;
+	os << "," << author.lines_removed;
 
 	return os;
 }
