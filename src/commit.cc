@@ -4,10 +4,15 @@
 
 Commit::Commit()
 {
-	this->signed_offs = 0;
-	this->reviews = 0;
 	this->commit_message_lines = 0;
+	this->signed_offs = 0;
+	this->testeds = 0;
+	this->reviews = 0;
 	this->fixes = 0;
+	this->changed_files = 0;
+	this->hunks = 0;
+	this->lines_added = 0;
+	this->lines_removed = 0;
 	this->fixed = 0;
 }
 
@@ -26,7 +31,7 @@ std::ostream& Commit::csv_header(std::ostream& os)
 	      ",author_wday" << ",author_hour" << ",commit_message_lines" <<
 	      ",signed_offs" << ",testeds" << ",reviews" << ",fixes" <<
 	      ",changed_files" << ",hunks" << ",lines_added" <<
-	      ",lines_removed" << ",fixes,";
+	      ",lines_removed" << ",fixed,";
 	      Author::csv_header(os, "author_");
 	      os << ",";
 	      Author::csv_header(os, "committer_");
@@ -53,6 +58,8 @@ std::ostream& operator<<(std::ostream& os, const Commit& commit)
 	   commit.hunks << ',' <<
 	   commit.lines_added << ',' <<
 	   commit.lines_removed << ','<<
+
+	   commit.fixed << ',' <<
 
 	   commit.author << ',' <<
 	   commit.committer;
