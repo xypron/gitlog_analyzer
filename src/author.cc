@@ -90,7 +90,8 @@ void Author::add_patch(Commit *patch) {
 	++this->patches;
 	++this->author_hours[patch->author_hour];
 	++this->author_wdays[patch->author_wday];
-	if (!this->first_patch) {
+	if (patch->author_timestamp && (!this->first_patch ||
+	    patch->author_timestamp < this->first_patch)) {
 		this->first_patch = patch->author_timestamp;
 	}
 	this->last_patch = patch->author_timestamp;

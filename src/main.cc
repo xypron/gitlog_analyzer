@@ -118,6 +118,7 @@ static int day_of_week(std::string date)
  */
 static bool parse_header(Commit *commit)
 {
+	static unsigned long last_commit_timestamp;
 	std::string line;
 
 	if (!std::getline(std::cin, line))
@@ -141,8 +142,11 @@ static bool parse_header(Commit *commit)
 	commit->author_email = line;
 
 	std::getline(std::cin, line);
-	commit->committer_timestamp = std::stoul(line, nullptr);
 	commit->author_timestamp = std::stol(line, nullptr);
+	/* A patch cannot be committed before being written */
+	if (commit->author_timestamp > commit->committer_timestamp) {
+		commit->author_timestamp = 0;
+	}
 
 	std::getline(std::cin, line);
 	commit->author_wday = day_of_week(line);
