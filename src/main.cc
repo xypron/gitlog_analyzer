@@ -185,6 +185,12 @@ static void parse(CommitList &commit_list)
 	}
 }
 
+/**
+ * authors() - collect authors of patches and commits
+ *
+ * @author_set:		set of authors of patches and commits
+ * @commit_list:	list of commits to scan for authors
+ */
 static void authors(AuthorSet &author_set, CommitList &commit_list)
 {
 	Author seek;
@@ -218,7 +224,15 @@ static void authors(AuthorSet &author_set, CommitList &commit_list)
 	}
 }
 
-static void output_authors(std::ostream &os, AuthorSet &author_set) {
+/**
+ * output_authors() - write authors to CSV file
+ *
+ * @os:		output stream to receive CSV file
+ * @start:	authors with last activity before this Unix time will be
+ *		ingnored
+ */
+static void output_authors(std::ostream &os, AuthorSet &author_set,
+			   unsigned long start) {
 	AuthorSet::iterator pos;
 	
 	Author::csv_header(os, "");
@@ -227,11 +241,21 @@ static void output_authors(std::ostream &os, AuthorSet &author_set) {
 	for (pos = author_set.begin(); pos != author_set.end(); ++pos) {
 		Author *author = *pos;
 
+		if (author->last_commit < start && author->last_patch < start) {
+			continue;
+		}
+
 		os << *author << std::endl;
 	}
 }
 
-
+/**
+ * output_commits() - write commits to CSV file
+ *
+ * @os:		output stream to receive CSV file
+ * @start:	commits with commit date before this Unix time will be
+ *		ingnored
+ */
 static void output_commits(std::ostream &os, CommitList commit_list,
 			   unsigned long start) {
 	CommitList::iterator pos;
@@ -280,7 +304,7 @@ int main(int argc, char *argv[])
 	authors(author_set, commit_list);
 
 	file.open(argv[1]);
-	output_authors(file, author_set);
+	output_authors(file, author_set, start);
 	file.close();
 	file.open(argv[2]);
 	output_commits(file, commit_list, start);
