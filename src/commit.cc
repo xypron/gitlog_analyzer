@@ -27,7 +27,8 @@ bool Commit::less(const Commit *rhs) const
 
 std::ostream& Commit::csv_header(std::ostream& os)
 {
-	os << "hash" << ",committer_wday" << ",committer_hour" <<
+	os << "hash" << ",committer_timestamp" <<
+	      ",committer_wday" << ",committer_hour" << ",author_timestamp" <<
 	      ",author_wday" << ",author_hour" << ",commit_message_lines" <<
 	      ",signed_offs" << ",testeds" << ",reviews" << ",fixes" <<
 	      ",changed_files" << ",hunks" << ",lines_added" <<
@@ -43,8 +44,10 @@ std::ostream& operator<<(std::ostream& os, const Commit& commit)
 {
 	os <<
 	   commit.hash << ',' <<
+	   commit.committer_timestamp << ',' <<
 	   commit.committer_wday << ',' <<
 	   commit.committer_hour << ',' <<
+	   commit.author_timestamp << ',' <<
 	   commit.author_wday << ',' <<
 	   commit.author_hour << ',' <<
 
