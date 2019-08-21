@@ -1,8 +1,8 @@
 Git Log Analyzer
 ================
 
-The Git Log Analyzer parses a Git log and creates a CSV file which can serve
-as a basis for an analyis of commit behavior.
+The Git Log Analyzer parses a Git log and creates two CSV files which can serve
+as a basis for an analyis of the commit behavior.
 
 Building
 --------
