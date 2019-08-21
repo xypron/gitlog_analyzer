@@ -2,6 +2,9 @@
 
 #include "commit.h"
 
+/**
+ * Commit::Commit() - create new commit
+ */
 Commit::Commit()
 {
 	this->commit_message_lines = 0;
@@ -16,15 +19,30 @@ Commit::Commit()
 	this->fixed = 0;
 }
 
+/**
+ * Commit::~Commit() - destroy commit
+ */
 Commit::~Commit()
 {
 }
 
+/**
+ * Commit::less() - compare two commits by hash
+ *
+ * @rhs:	right hand side of comparison
+ * Return:	true if this commit's hass less then other commit's hash
+ */
 bool Commit::less(const Commit *rhs) const
 {
 	return this->hash < rhs->hash;
 }
 
+/**
+ * Commit::csv_header() - write CSV header for commits
+ *
+ * @os:		output stream
+ * Return:	output stream
+ */
 std::ostream& Commit::csv_header(std::ostream& os)
 {
 	os << "hash" << ",committer_timestamp" <<
@@ -40,6 +58,13 @@ std::ostream& Commit::csv_header(std::ostream& os)
 	return os;
 }
 
+/**
+ * operator<<() - write commit to CSV file
+ *
+ * @os:		output stream
+ * @commit:	commit
+ * Return:	output stream
+ */
 std::ostream& operator<<(std::ostream& os, const Commit& commit)
 {
 	os <<
