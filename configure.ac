@@ -11,11 +11,6 @@ dnl Enhanced libtool support.
 LT_INIT
 
 dnl Compiler check
-AC_PROG_CC
-AC_CHECK_PROG([have_cc],[$CC],[yes],[no])
-if test [$have_cc] != [yes]; then
-  AC_MSG_ERROR([$CC is missing])
-fi
 AC_PROG_CXX
 AC_CHECK_PROG([have_cxx],[$CXX],[yes],[no])
 if test [$have_cxx] != [yes]; then
