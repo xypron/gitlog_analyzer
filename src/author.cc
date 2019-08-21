@@ -75,10 +75,13 @@ void Author::add_commit(Commit *commit) {
 	++this->commits;
 	++this->committer_hours[commit->committer_hour];
 	++this->committer_wdays[commit->committer_wday];
-	if (!this->first_commit) {
+	if (commit->committer_timestamp && (!this->first_commit ||
+	    commit->committer_timestamp < this->first_commit)) {
 		this->first_commit = commit->committer_timestamp;
 	}
-	this->last_commit = commit->committer_timestamp;
+	if (commit->committer_timestamp > this->last_commit) {
+		this->last_commit = commit->committer_timestamp;
+	}
 }
 
 /**
