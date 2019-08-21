@@ -143,8 +143,11 @@ static bool parse_header(Commit *commit)
 
 	std::getline(std::cin, line);
 	commit->author_timestamp = std::stol(line, nullptr);
-	/* A patch cannot be committed before being written */
-	if (commit->author_timestamp > commit->committer_timestamp) {
+	/*
+	 * A patch cannot be committed before being written. Allow one day grace
+	 * period for incorrect clocks.
+	 */
+	if (commit->author_timestamp > commit->committer_timestamp + 86400) {
 		commit->author_timestamp = 0;
 	}
 
