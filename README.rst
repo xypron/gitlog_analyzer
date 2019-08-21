@@ -32,7 +32,7 @@ To output only data since a give Unix time stamp (2013.01.01T00:00:00Z)::
 
     git log --date=iso-strict --no-merges \
     --pretty=']start::commit[%n%H%n%cE%n%ct%n%cD%n%aE%n%at%n%aD%n%B%n]start::diff[' \
-    --full-diff -p . | gitlog_analyzer authors.csv commits.csv 1356994800
+    --full-diff -p . | gitlog_analyzer authors.csv commits.csv 1356998400
 
 License
 -------

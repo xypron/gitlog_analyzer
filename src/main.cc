@@ -1,9 +1,11 @@
 /* SPDX-License-Identifier: MIT */
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <set>
+#include <ctime>
 #include "gitlog_analyzer.h"
 
 /**
@@ -297,8 +299,11 @@ int main(int argc, char *argv[])
 
 	if (argc > 3) {
 		start = std::stoul(argv[3], nullptr);
+		time_t start_time = start;
+		std::cout << "Commit activity before " <<
+			     std::put_time(std::gmtime(&start_time), "%c %Z") <<
+			     " will be ignored." << std::endl;
 	}
-	std::cout << start << std::endl;
 
 	parse(commit_list);
 	authors(author_set, commit_list);
