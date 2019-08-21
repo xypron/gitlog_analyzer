@@ -94,7 +94,9 @@ void Author::add_patch(Commit *patch) {
 	    patch->author_timestamp < this->first_patch)) {
 		this->first_patch = patch->author_timestamp;
 	}
-	this->last_patch = patch->author_timestamp;
+	if (patch->author_timestamp > this->last_patch) {
+		this->last_patch = patch->author_timestamp;
+	}
 	this->commit_message_lines += patch->commit_message_lines;
 	this->changed_files += patch->changed_files;
 	this->hunks += patch->hunks;
